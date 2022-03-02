@@ -1,4 +1,5 @@
 const Producto = require('../models/producto');
+const Categoria = require('../models/categoria');
 const Usuarios = require('../models/usuario');
 const cloudinary = require('../utils/cloudinary');
 const bcryptjs = require('bcryptjs');
@@ -23,6 +24,24 @@ const subirproductoTodo = async(url,uid,producto) =>{
           const producto = new Producto(newproducto);
           await producto.save();
           return producto;
+      } catch (error) {
+       console.log(error);
+      }
+       
+   }
+
+   
+const subircategoriaTodo = async(url,producto) =>{
+    const newcategoria = {
+            categoria: producto.Categoria,
+            mostrar: producto.mostrar,
+            urlfoto: url.secure_url,
+            uidfoto: url.public_id
+    }
+    try{
+          const categoria = new Categoria(newcategoria);
+          await categoria.save();
+          return categoria;
       } catch (error) {
        console.log(error);
       }
@@ -108,6 +127,15 @@ const eliminarparrafoproducto = async(pid,index) =>{
        
    }
 
+   const eliminarcategoria = async(cid) =>{
+    try {
+       await Categoria.findOneAndDelete({_id: cid});
+      } catch (error) {
+       console.log(error);
+      }
+       
+   }
+
    const eliminarUser = async(uid) =>{
     try {
        await Usuarios.findOneAndDelete({_id: uid});
@@ -139,6 +167,28 @@ const eliminarparrafoproducto = async(pid,index) =>{
        
    }
 
+   const modificardatoscategoria = async(producto,url) =>{
+    try {
+        console.log(producto)
+
+       if(url !== null){
+        const ap = await cloudinary.cloudinary.uploader.destroy(producto.uidfoto, {type : 'upload', resource_type : 'image'}, (res)=>{
+            return res;
+       });
+       console.log(ap)
+        producto.urlfoto = url.secure_url;
+        producto.uidfoto = url.public_id;
+        
+    }
+
+       await Categoria.findByIdAndUpdate(producto.cid,producto);
+      } catch (error) {
+       console.log(error);
+      }
+       
+   }
+
+
    const modificarDatosUsuario = async(usuario) =>{
     try {
        const usermodify = await Usuarios.findById(usuario.uid);
@@ -149,8 +199,10 @@ const eliminarparrafoproducto = async(pid,index) =>{
         usuario.password = bcryptjs.hashSync(usuario.password , salt);  
         await Usuarios.findByIdAndUpdate(usuario.uid,usuario);
        }
+       return true;
       } catch (error) {
        console.log(error);
+       return false
       }
        
    }
@@ -165,5 +217,8 @@ module.exports = {
     adicionarParrafoproducto,
     crearusuario,
     eliminarUser,
-    modificarDatosUsuario
+    modificarDatosUsuario,
+    subircategoriaTodo,
+    modificardatoscategoria,
+    eliminarcategoria
 }

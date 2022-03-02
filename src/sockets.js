@@ -1,4 +1,4 @@
-const {userinformarsolicitud,cambiarCategoria, modificardatosproducto,eliminarfotoproductoadicional,crearusuario,eliminarUser,modificarDatosUsuario,adicionarproductocomprado,eliminarparrafoproducto, adicionarParrafoproducto,adicionarfotoproducto,subirproducto, eliminarproducto,eliminarproductouser, subirproductoTodo} = require("./helpers/eventoSockets");
+const {subircategoriaTodo,modificardatoscategoria,eliminarcategoria, modificardatosproducto,eliminarfotoproductoadicional,crearusuario,eliminarUser,modificarDatosUsuario,adicionarproductocomprado,eliminarparrafoproducto, adicionarParrafoproducto,adicionarfotoproducto,subirproducto, eliminarproducto,eliminarproductouser, subirproductoTodo} = require("./helpers/eventoSockets");
 const { comprobacionJWT } = require("./helpers/jwt");
 const cloudinary = require('./utils/cloudinary');
 const {nanoid} = require('nanoid');
@@ -76,6 +76,24 @@ class Sockets {
                       console.log(e);
                   }
              })
+
+             
+              //subir categoria con foto 
+              socket.on('categoriacrear', async ({url,producto})=>{
+                  console.log(producto)
+                const urlconver = {
+                    secure_url: url.secure_url,
+                    public_id: (url.public_id===0)?nanoid():url.public_id
+                }
+                  try{
+                      const categoria = await subircategoriaTodo(urlconver,producto);
+                      this.io.to(uid).emit('categoriacrear',categoria);
+                  }catch (e){
+                      console.log(e);
+                  }
+             })
+
+
               //crear nuevo usuario
               socket.on('newusuario', async ({producto})=>{
 
@@ -137,7 +155,17 @@ class Sockets {
              socket.on('productomodificar', async ({Producto,url})=>{
                 try {     
                    await modificardatosproducto(Producto,url);
-                   this.io.to(Producto.de).emit('productomodificar',Producto);
+                   this.io.to(uid).emit('productomodificar',Producto);
+                } catch (error) {
+                    console.log(error);
+                }
+             })
+             
+              //modificar producto foto
+              socket.on('categoriamodificar', async ({Producto,url})=>{
+                try {     
+                   await modificardatoscategoria(Producto,url);
+                   this.io.to(uid).emit('categoriamodificar',Producto);
                 } catch (error) {
                     console.log(error);
                 }
@@ -146,8 +174,12 @@ class Sockets {
              socket.on('usuariomodificar', async ({usuario})=>{
                 try {   
                     console.log(usuario)  
-                   await modificarDatosUsuario(usuario);
-                   this.io.to(uid).emit('usuariomodificar',usuario);
+                   const res = await modificarDatosUsuario(usuario);
+                   if(res){
+                       this.io.to(uid).emit('usuariomodificar',usuario);
+                   }else{
+                    this.io.to(uid).emit('usuariomodificar',usuario);
+                   }
                 } catch (error) {
                     console.log(error);
                 }
@@ -161,6 +193,19 @@ class Sockets {
                    });
                    await eliminarproductouser(Producto.pid);
                    this.io.to(Producto.de).emit('productoeliminar',Producto.pid);
+                } catch (error) {
+                    console.log(error);
+                }
+             })
+
+             //eliminar producto foto
+             socket.on('categoriaeliminar', async ({uidfoto,Producto})=>{
+                try {     
+                    await cloudinary.cloudinary.uploader.destroy(uidfoto, {type : 'upload', resource_type : 'image'}, (res)=>{
+                        return res;
+                   });
+                   await eliminarcategoria(Producto.cid);
+                   this.io.to(uid).emit('categoriaeliminar',Producto.cid);
                 } catch (error) {
                     console.log(error);
                 }

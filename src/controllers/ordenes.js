@@ -1,10 +1,11 @@
 const Producto = require('../models/producto');
 const Usuarios = require('../models/usuario');
+const Categoria = require('../models/categoria');
+
 
 const crearproducto = async (req,res) => {
-    const miId = req.uid;
     try {
-        const producto = await Producto.find( {de: miId });
+        const producto = await Producto.find();
         const productos = producto.reverse();
         res.json({
             ok:true,
@@ -14,6 +15,20 @@ const crearproducto = async (req,res) => {
         console.log(error)
     }
     }
+
+    const crearCategoria = async (req,res) => {
+        try {
+            const categoria = await Categoria.find();
+            const categorias = categoria.reverse();
+            res.json({
+                ok:true,
+                categorias
+            })
+        } catch (error) {
+            console.log(error)
+        }
+        }
+    
 
     const crearusuario = async (req,res) => {
         try {
@@ -47,5 +62,6 @@ const productosUserMostrar = async (req,res) => {
 module.exports ={
     crearproducto,
     productosUserMostrar,
-    crearusuario
+    crearusuario,
+    crearCategoria
 }
