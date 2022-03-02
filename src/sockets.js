@@ -1,4 +1,4 @@
-const {saveMessageImage,userinformarsolicitud,cambiarCategoria,ChatSeleccionadoBorrarNoSeleccionados,chatcanceladasolicitud,cambiarestadochat,serecibioelproductoconexito,cambiarestadochatrecibido, userconectado,desactivarproducto, modificardatosproducto,eliminarfotoproductoadicional,cargarproductosvendidos,cargarproductoscomprados,eliminarproductocarrito,cargarproductoscarrito,adicionarproductocomprado,eliminarparrafoproducto,guardarcarritoproducto, adicionarParrafoproducto,userdesconectado,adicionarfotoproducto, usuariosactivos,savemessage,subirproducto, eliminarproducto,eliminarproductouser, subirproductoTodo,actualizarfotoperfil,agregarfotouser,eliminarfotouser } = require("./helpers/eventoSockets");
+const {userinformarsolicitud,cambiarCategoria, modificardatosproducto,eliminarfotoproductoadicional,crearusuario,eliminarUser,modificarDatosUsuario,adicionarproductocomprado,eliminarparrafoproducto, adicionarParrafoproducto,adicionarfotoproducto,subirproducto, eliminarproducto,eliminarproductouser, subirproductoTodo} = require("./helpers/eventoSockets");
 const { comprobacionJWT } = require("./helpers/jwt");
 const cloudinary = require('./utils/cloudinary');
 const {nanoid} = require('nanoid');
@@ -19,49 +19,11 @@ class Sockets {
                return socket.disconnect();
            }
           
-           const informarActivo = await userconectado(uid);
-           for (let i = 0; i < informarActivo.length; i++) {
-            const pos = informarActivo[i];
-            if(pos !== uid){
-            this.io.to(pos).emit('lista-usuarios',await usuariosactivos(pos));
-            }
-        }
            console.log('cliente conectado')
             
             socket.join( uid );
            
-            this.io.to(uid).emit('lista-usuarios',await usuariosactivos(uid));
-            this.io.to(uid).emit('lista-carrito',await cargarproductoscarrito(uid));     
-            this.io.to(uid).emit('lista-compras',await cargarproductoscomprados(uid));     
-            this.io.to(uid).emit('lista-vendidos',await cargarproductosvendidos(uid));     
-            //mandar mensajes a los dos chats que se estan conectando
-            socket.on('mensaje', async (payload)=>{
-                payload.uidfoto = nanoid();
-               const mensaje = await savemessage(payload);
-               this.io.to(payload.para).emit('mensaje',mensaje);
-               this.io.to(payload.de).emit('mensaje',mensaje);
-               this.io.to(uid).emit('lista-usuarios',await usuariosactivos(uid));
-               this.io.to(payload.para).emit('lista-usuarios',await usuariosactivos(payload.para));
-            })
-
-            //mandar mensaje a los dos chats en formado imagen
-             socket.on('mensajeimage', async (payload)=>{
-               const mensaje = await saveMessageImage(payload);
-               this.io.to(payload.para).emit('mensaje',mensaje);
-               this.io.to(payload.de).emit('mensaje',mensaje);
-               this.io.to(uid).emit('lista-usuarios',await usuariosactivos(uid));
-               this.io.to(payload.para).emit('lista-usuarios',await usuariosactivos(payload.para));
-            })
-           //solicitud del cliente mandada, pide confirmacion de llegada
-            socket.on('enviadoproductosolicitud', async ({productorden,de,para})=>{
-            await cambiarestadochat(productorden);
-            this.io.to(para).emit('recibidoproductosolicitud',de);
-            this.io.to(de).emit('recibidoproductosolicitud',para);
-            this.io.to(para).emit('estadopendiente');
-            this.io.to(de).emit('estadopendiente');
-             }) 
-             
-             //solicitud del cliente recibida,confirmacion de llegada
+            //solicitud del cliente recibida,confirmacion de llegada
             socket.on('recibidoproductosolicitud', async ({productorden,de,para})=>{
                 await cambiarestadochatrecibido(productorden);
                 this.io.to(para).emit('recibidoproductosolicitud',de);
@@ -79,31 +41,9 @@ class Sockets {
                  this.io.to(de).emit('lista-usuarios',await usuariosactivos(de));
 
                  }) 
-             //seleccionar chat y eliminar las demas solicitudes
-             socket.on('seleccionarchat', async (payload)=>{
-               const mensaje = await ChatSeleccionadoBorrarNoSeleccionados(payload);
-               for (let i = 0; i < mensaje.length; i++) {
-                const pos = mensaje[i];
-                if(pos !== uid){
-                this.io.to(pos).emit('lista-usuarios',await usuariosactivos(pos));
-                if(pos !==payload.de && pos !== payload.para){
-                    this.io.to(pos).emit('resetchat');
-                }
-                }
-            }
-            this.io.to(uid).emit('lista-usuarios',await usuariosactivos(uid));
-            this.io.to(payload.para).emit('recibidoproductosolicitud', payload.de);
-            })
-             //deseleccionar chat y activar las demas solicitudes
-             socket.on('deseleccionarchat', async ({productorden,de,para})=>{
-                await chatcanceladasolicitud(productorden);
-                this.io.to(de).emit('resetchat');
-                this.io.to(para).emit('resetchat');
-                this.io.to(de).emit('lista-usuarios',await usuariosactivos(de));
-                this.io.to(para).emit('lista-usuarios',await usuariosactivos(para));
+      
 
-
-             })
+            
             //subir producto que se ordenara
             socket.on('orden', async ({solicitud, url})=>{
                 solicitud.urlfoto = url.secure_url;
@@ -136,6 +76,17 @@ class Sockets {
                       console.log(e);
                   }
              })
+              //crear nuevo usuario
+              socket.on('newusuario', async ({producto})=>{
+
+                try{
+                    console.log(producto)
+                    const productoadi = await crearusuario(uid,producto);
+                    this.io.to(uid).emit('newusuario',productoadi);
+                }catch (e){
+                    console.log(e);
+                }
+           })
              //subir foto adicional de producto
              socket.on('subirfotoadicionalproducto', async ({url,pid})=>{
                 const urlconver = {
@@ -158,16 +109,7 @@ class Sockets {
                       console.log(e);
                   }
              })
-             //eliminar producto carrito 
-             socket.on('eliminarproductocarrito', async ({pid})=>{
-                try{
-                    const res = await eliminarproductocarrito(pid,uid);
-                    this.io.to(uid).emit('lista-carrito',await cargarproductoscarrito(uid));     
-                    this.io.to(uid).emit('eliminarproductocarrito',res);
-                }catch (e){
-                    console.log(e);
-                }
-           })
+    
              //eliminar Parrafo de producto
              socket.on('productoparrafoeliminar', async ({pid,index})=>{
                 try{
@@ -177,30 +119,7 @@ class Sockets {
                     console.log(e);
                 }
            })
-            //adicionar producto comprado
-           socket.on('anadircompra', async ({codigo,preference, id,status})=>{
-              try{
-                const userinformarventa =  await adicionarproductocomprado(uid,codigo,id,status,preference);
-                if(userinformarventa){
-                    this.io.to(userinformarventa).emit('lista-vendidos',await cargarproductosvendidos(userinformarventa));   
-                    this.io.to(userinformarventa).emit('notificacion-venta');       
-                    this.io.to(uid).emit('lista-compras',await cargarproductoscomprados(uid));     
-                }
 
-              }catch (e){
-                  console.log(e);
-              }
-         })
-            //guardar carrito producto
-            socket.on('guardarcarrito', async ({pid})=>{
-                  try{
-                    const res = await guardarcarritoproducto(uid,pid);
-                    this.io.to(uid).emit('lista-carrito',await cargarproductoscarrito(uid));     
-                    this.io.to(uid).emit('guardarcarrito',res);
-                  }catch (e){
-                      console.log(e);
-                  }
-             })
                //eliminar foto restar producto
                socket.on('fotoproductoeliminar', async ({url,pid})=>{
                 const urlconver = {
@@ -223,6 +142,17 @@ class Sockets {
                     console.log(error);
                 }
              })
+             //modificar usuario
+             socket.on('usuariomodificar', async ({usuario})=>{
+                try {   
+                    console.log(usuario)  
+                   await modificarDatosUsuario(usuario);
+                   this.io.to(uid).emit('usuariomodificar',usuario);
+                } catch (error) {
+                    console.log(error);
+                }
+             })
+
                //eliminar producto foto
                socket.on('productoeliminar', async ({uidfoto,Producto})=>{
                 try {     
@@ -235,29 +165,18 @@ class Sockets {
                     console.log(error);
                 }
              })
-            //actualizar foto de perfil
-             socket.on('fotouser', async ({url,uid})=>{
-                await actualizarfotoperfil(url,uid);
-                this.io.to(uid).emit('fotouser',url.secure_url);
-                this.io.emit('lista-usuarios',await usuariosactivos());
-             })
-             //agregar foto adicional usuario
-             socket.on('fotouseradicional', async ({url,uid})=>{
-                await agregarfotouser(url,uid);
-                this.io.to(uid).emit('fotouseradicional',{urlfoto:url.secure_url, uidfoto:url.public_id});
-             })
-             //eliminar foto
-             socket.on('fotousereliminar', async ({uidfoto,uid})=>{
-                try {     
-                    await cloudinary.cloudinary.uploader.destroy(uidfoto, {type : 'upload', resource_type : 'image'}, (res)=>{
-                        return res;
-                   });
-                   await eliminarfotouser({uidfoto,uid});
-                   this.io.to(uid).emit('fotousereliminar',uidfoto);
-                } catch (error) {
-                    console.log(error);
-                }
-             })
+
+         //eliminar usuario
+         socket.on('usuarioEliminar', async ({Producto})=>{
+            try {     
+               await eliminarUser(Producto.uid);
+               console.log(Producto)
+               this.io.to(uid).emit('usuarioEliminar',Producto.uid);
+
+            } catch (error) {
+                console.log(error);
+            }
+         })
             //cuando un cliente elimina un producto 
              socket.on('eliminarorden', async ({oid,idfoto})=>{
                  try {     
@@ -298,6 +217,7 @@ class Sockets {
                 })
         }
         );
+        
     }
 
 

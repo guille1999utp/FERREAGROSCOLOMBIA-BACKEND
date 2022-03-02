@@ -15,12 +15,7 @@ const puroductoSchema = new Schema({
         default:{
             Age:'',
             Categoria:'',
-            Ubicaion:'',
-            DomicilioIncluido:'',
-            Garantia:'',
             Precio: 0,
-            Cantidad:0
-
         }
     },
     fotosdescripsion:  {

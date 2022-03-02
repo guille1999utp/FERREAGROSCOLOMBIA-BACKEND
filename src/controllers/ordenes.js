@@ -1,38 +1,6 @@
-const Ordenproducto = require('../models/ordenar');
 const Producto = require('../models/producto');
+const Usuarios = require('../models/usuario');
 
-const ordenemisor = async (req,res) => {
-const miId = req.uid;
-try {
-    const producto = await Ordenproducto.find( {de: miId });
-    const productos = producto.reverse();
-    res.json({
-        ok:true,
-        producto:productos
-    })
-} catch (error) {
-    console.log(error)
-}
-}
-
-const ordenencontrar = async (req,res) => {
-    const miId = req.body.oid;
-    try {
-        let producto = await Ordenproducto.findById( miId );
-        console.log(producto)
-        if(!producto.aparecer){
-            producto = 0;
-        }else{
-            producto = 1;
-        }
-        res.json({
-            ok:true,
-            producto
-        })
-    } catch (error) {
-        console.log(error)
-    }
-    }
 const crearproducto = async (req,res) => {
     const miId = req.uid;
     try {
@@ -47,6 +15,18 @@ const crearproducto = async (req,res) => {
     }
     }
 
+    const crearusuario = async (req,res) => {
+        try {
+            let producto = await Usuarios.find();
+            producto = producto.reverse();
+            res.json({
+                ok:true,
+                producto
+            })
+        } catch (error) {
+            console.log(error)
+        }
+        }
     
 const productosUserMostrar = async (req,res) => {
     const miId = req.params.user;
@@ -65,8 +45,7 @@ const productosUserMostrar = async (req,res) => {
     
 
 module.exports ={
-    ordenemisor,
     crearproducto,
     productosUserMostrar,
-    ordenencontrar
+    crearusuario
 }
