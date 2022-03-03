@@ -1,6 +1,42 @@
 const Producto = require('../models/producto');
 const {mercadopago} = require('../utils/mercadoPago');
 const Usuario = require('../models/usuario');
+const Categoria = require('../models/categoria');
+
+const categorias = async (req,res) => {  
+try {
+  const categorias = await Categoria.find();
+  res.json({
+      ok:true,
+      filtervar:categorias
+      })
+} catch (error) {
+  console.log(error);
+  res.json({
+      ok:false,
+      msg:'no se encontro producto'
+  })
+}
+  }
+
+const categoriasindividual  = async (req,res) => {  
+try {
+  let categorias = await Categoria.find();
+  categorias = categorias.map(function(filter){
+    return filter.categoria
+  })
+  res.json({
+      ok:true,
+      indi:categorias
+      })
+} catch (error) {
+  console.log(error);
+  res.json({
+      ok:false,
+      msg:'no se encontro producto'
+  })
+}
+  }
 
 const pedirproducto = async (req,res) => {
     const producto = req.params.producto;
@@ -153,7 +189,7 @@ try {
         const informacionmostrarcategoria = async (req,res) => {
           const categoriabuscar = req.params.categoria;
          try{ 
-          const filtervar = await Producto.find({ "detalles.Categoria": categoriabuscar }).sort({creacion: 'desc'}).limit(30);
+          const filtervar = await Producto.find().limit(30);
               res.json({
                   ok:true,
                   filtervar
@@ -292,5 +328,7 @@ module.exports ={
     informacionmostrarcategoria,
     PagarProducto,
     FeedBack,
-    PagarServicios
+    PagarServicios,
+    categorias,
+    categoriasindividual
 }
