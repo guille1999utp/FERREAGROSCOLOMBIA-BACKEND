@@ -111,6 +111,7 @@ class Sockets {
                     secure_url: url.secure_url,
                     public_id: url.public_id
                 }
+                console.log(url,pid);
                   try{
                       await adicionarfotoproducto(urlconver,pid);
                       this.io.to(uid).emit('subirfotoadicionalproducto',urlconver);
