@@ -5,7 +5,7 @@ const Categoria = require('../models/categoria');
 
 const categorias = async (req,res) => {  
 try {
-  const categorias = await Categoria.find();
+  const categorias = await Categoria.find({mostrar: "true"});
   res.json({
       ok:true,
       filtervar:categorias
@@ -19,24 +19,25 @@ try {
 }
   }
 
-const categoriasindividual  = async (req,res) => {  
-try {
-  let categorias = await Categoria.find();
-  categorias = categorias.map(function(filter){
-    return filter.categoria
-  })
-  res.json({
-      ok:true,
-      indi:categorias
+
+  const categoriasindividual  = async (req,res) => {  
+    try {
+      let categorias = await Categoria.find();
+      categorias = categorias.map(function(filter){
+        return filter.categoria
       })
-} catch (error) {
-  console.log(error);
-  res.json({
-      ok:false,
-      msg:'no se encontro producto'
-  })
-}
-  }
+      res.json({
+          ok:true,
+          indi:categorias
+          })
+    } catch (error) {
+      console.log(error);
+      res.json({
+          ok:false,
+          msg:'no se encontro producto'
+      })
+    }
+      }
 
 const pedirproducto = async (req,res) => {
     const producto = req.params.producto;
@@ -203,6 +204,31 @@ try {
               })
           }
           }
+          const CategoriasTodas = async (req,res) => {
+            const categoriabuscar = req.params.categoria;
+           try{ 
+             if(categoriabuscar === 'todos'){
+              const filtervar = await Producto.find().limit(30);
+              res.json({
+                  ok:true,
+                  filtervar
+                  })
+             }else{
+               const filtervar = await Producto.find({"detalles.Categoria":  categoriabuscar}).limit(30);
+                   res.json({
+                       ok:true,
+                       filtervar
+                       })
+             }
+                    }catch (error) {
+                console.log(error);
+                res.json({
+                    ok:false,
+                    msg:'no se encontro producto'
+                })
+            }
+            }
+  
 
           const PagarServicios = async(req,res) =>{
             const miId = req.uid;
@@ -330,5 +356,6 @@ module.exports ={
     FeedBack,
     PagarServicios,
     categorias,
-    categoriasindividual
+    categoriasindividual,
+    CategoriasTodas
 }
