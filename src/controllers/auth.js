@@ -11,7 +11,7 @@ const Crearusuario = async (req, res = response)=>{
         if(existecorreo){
         return res.status(400).json({
             ok:false,
-            msg: 'el correo ya existe'
+            msg: 'el correo ya existe '
         })
         }
             const newuser = new Usuario(req.body);
@@ -63,7 +63,7 @@ return res.json({
         console.log(error);
         res.status(500).json({
             ok:false,
-            msg: 'hubo fallas en la base de datos'
+            msg: 'hubo fallas en la base de datos de ferre'
         })
             }
     
