@@ -36,7 +36,7 @@ const miperfil = async (req,res) => {
         console.log(error);
         res.json({
             ok:false,
-            msg:'no se encontro perfil'
+            msg:'no se encontro perfil '
         })
     }
     }
