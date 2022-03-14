@@ -1,5 +1,6 @@
 const Producto = require('../models/producto');
 const Categoria = require('../models/categoria');
+const Videos = require('../models/videos');
 
 const categorias = async (req,res) => {  
 try {
@@ -226,8 +227,43 @@ try {
                 })
             }
             }
-  
 
+            const VideosTodos = async (req,res) => {
+             try{ 
+                const videos = await Videos.find();
+                res.json({
+                    ok:true,
+                    videos
+                    })
+ 
+                      }catch (error) {
+                  console.log(error);
+                  res.json({
+                      ok:false,
+                      msg:'no se encontro videos'
+                  })
+              }
+              }
+    
+
+              const SubirUrl = async (req,res) => {
+                console.log(req)
+                try{ 
+                   const videos = new Videos({urlvideo:req.body.url});
+                   await videos.save();
+                   res.json({
+                       ok:true,
+                       videos
+                       })
+    
+                         }catch (error) {
+                     console.log(error);
+                     res.json({
+                         ok:false,
+                         msg:'video fallido'
+                     })
+                 }
+                 }
        
             const FeedBack = async (req,res) => {
               res.json({
@@ -248,5 +284,7 @@ module.exports ={
     FeedBack,
     categorias,
     categoriasindividual,
-    CategoriasTodas
+    CategoriasTodas,
+    VideosTodos,
+    SubirUrl
 }

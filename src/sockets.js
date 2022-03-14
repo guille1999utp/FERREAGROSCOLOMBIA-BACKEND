@@ -2,6 +2,8 @@ const {subircategoriaTodo,modificardatoscategoria,eliminarcategoria, modificarda
 const { comprobacionJWT } = require("./helpers/jwt");
 const cloudinary = require('./utils/cloudinary');
 const {nanoid} = require('nanoid');
+const Videos = require('./models/videos');
+
 class Sockets {
 
     constructor( io ) {
@@ -119,6 +121,17 @@ class Sockets {
                       console.log(e);
                   }
              })
+             
+             //eliminar video
+             socket.on('eliminarVideo', async ({vid})=>{
+                try{
+                    console.log(vid)
+                    await Videos.findByIdAndDelete(vid);
+                    
+                }catch (e){
+                    console.log(e);
+                }
+           })
              //subir Parrafo adicional de producto
              socket.on('subirparrafonuevo', async ({Parrafo,pid})=>{
                   try{
