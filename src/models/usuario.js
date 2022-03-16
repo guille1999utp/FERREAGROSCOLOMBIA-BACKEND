@@ -5,7 +5,11 @@ const userSchema = new Schema({
         required : true,
         trim: true,
     },
-    
+    online:{
+        type: Boolean,
+        required : true,
+        default: false
+    },
     correo:{
         type: String,
         required : true,

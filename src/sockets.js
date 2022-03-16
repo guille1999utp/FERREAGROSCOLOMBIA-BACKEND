@@ -1,4 +1,4 @@
-const {subircategoriaTodo,modificardatoscategoria,eliminarcategoria, modificardatosproducto,eliminarfotoproductoadicional,crearusuario,eliminarUser,modificarDatosUsuario,adicionarproductocomprado,eliminarparrafoproducto, adicionarParrafoproducto,adicionarfotoproducto,subirproducto, eliminarproducto,eliminarproductouser, subirproductoTodo} = require("./helpers/eventoSockets");
+const {subircategoriaTodo,modificardatoscategoria,eliminarcategoria, userconectado,modificardatosproducto,eliminarfotoproductoadicional,crearusuario,eliminarUser,modificarDatosUsuario,userdesconectado,adicionarproductocomprado,eliminarparrafoproducto, adicionarParrafoproducto,adicionarfotoproducto,subirproducto, eliminarproducto,eliminarproductouser, subirproductoTodo} = require("./helpers/eventoSockets");
 const { comprobacionJWT } = require("./helpers/jwt");
 const cloudinary = require('./utils/cloudinary');
 const {nanoid} = require('nanoid');
@@ -20,7 +20,8 @@ class Sockets {
                console.log('socket erroneo');
                return socket.disconnect();
            }
-          
+           await userconectado(uid);
+
            console.log('cliente conectado')
             
             socket.join( uid );
@@ -266,13 +267,6 @@ class Sockets {
              socket.on('disconnect',async ()=>{
                  console.log('cliente desconectado')
                 await userdesconectado(uid);
-                 const res = await usuariosactivos(uid);
-                 for (let i = 0; i < res.length; i++) {
-                    const pos = res[i]._id + '';
-                    if(pos !== uid){
-                    this.io.to(pos).emit('lista-usuarios',await usuariosactivos(pos));
-                    }
-                }
                 })
         }
         );

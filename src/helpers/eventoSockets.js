@@ -4,6 +4,14 @@ const Usuarios = require('../models/usuario');
 const cloudinary = require('../utils/cloudinary');
 const bcryptjs = require('bcryptjs');
 
+
+const userconectado = async(uid) =>{
+    const usuario = await Usuarios.findById(uid);
+    usuario.online = true;
+    await usuario.save();
+
+}
+
 const subirproductoTodo = async(url,uid,producto) =>{
     const newproducto = {
         de: uid,
@@ -207,7 +215,14 @@ const eliminarparrafoproducto = async(pid,index) =>{
        
    }
 
+   const userdesconectado = async(uid) =>{
+    const usuario = await Usuarios.findById(uid);
+    usuario.online = false;
+    await usuario.save();
+    return usuario;
+}
 module.exports = {
+    userdesconectado,
     modificardatosproducto,
     eliminarfotoproductoadicional,
     subirproductoTodo,
@@ -220,5 +235,6 @@ module.exports = {
     modificarDatosUsuario,
     subircategoriaTodo,
     modificardatoscategoria,
-    eliminarcategoria
+    eliminarcategoria,
+    userconectado
 }
