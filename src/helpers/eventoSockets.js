@@ -1,4 +1,6 @@
 const Producto = require('../models/producto');
+const Imagenes = require('../models/imagenes');
+
 const Categoria = require('../models/categoria');
 const Usuarios = require('../models/usuario');
 const cloudinary = require('../utils/cloudinary');
@@ -87,6 +89,22 @@ const subircategoriaTodo = async(url,producto) =>{
             console.log(error);
         }
    }
+
+
+   
+   const adicionarFotoGaleria = async(url,imag) =>{
+    try{
+         const imagen = new Imagenes({
+            urlImagen: url.secure_url,
+            idfoto: url.public_id,
+            tamano: imag
+        });
+        await imagen.save();
+        return imagen;
+     } catch (error) {
+         console.log(error);
+     }
+}
 
 
    const adicionarParrafoproducto = async(Parrafo,pid) =>{
@@ -236,5 +254,6 @@ module.exports = {
     subircategoriaTodo,
     modificardatoscategoria,
     eliminarcategoria,
-    userconectado
+    userconectado,
+    adicionarFotoGaleria
 }

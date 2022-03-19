@@ -1,6 +1,7 @@
 const Producto = require('../models/producto');
 const Categoria = require('../models/categoria');
 const Videos = require('../models/videos');
+const Imagenes = require('../models/imagenes');
 
 const categorias = async (req,res) => {  
 try {
@@ -245,6 +246,22 @@ try {
               }
               }
     
+              const ImagenesTodos = async (req,res) => {
+                try{ 
+                   const imagene = await Imagenes.find();
+                   res.json({
+                       ok:true,
+                       imagene
+                       })
+    
+                         }catch (error) {
+                     console.log(error);
+                     res.json({
+                         ok:false,
+                         msg:'no se encontro Imagenes'
+                     })
+                 }
+                 }
 
               const SubirUrl = async (req,res) => {
                 console.log(req)
@@ -286,5 +303,6 @@ module.exports ={
     categoriasindividual,
     CategoriasTodas,
     VideosTodos,
-    SubirUrl
+    SubirUrl,
+    ImagenesTodos
 }

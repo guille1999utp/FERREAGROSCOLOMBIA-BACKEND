@@ -1,4 +1,4 @@
-const {subircategoriaTodo,modificardatoscategoria,eliminarcategoria, userconectado,modificardatosproducto,eliminarfotoproductoadicional,crearusuario,eliminarUser,modificarDatosUsuario,userdesconectado,adicionarproductocomprado,eliminarparrafoproducto, adicionarParrafoproducto,adicionarfotoproducto,subirproducto, eliminarproducto,eliminarproductouser, subirproductoTodo} = require("./helpers/eventoSockets");
+const {subircategoriaTodo,modificardatoscategoria,eliminarcategoria, userconectado,modificardatosproducto,eliminarfotoproductoadicional,adicionarFotoGaleria,crearusuario,eliminarUser,modificarDatosUsuario,userdesconectado,adicionarproductocomprado,eliminarparrafoproducto, adicionarParrafoproducto,adicionarfotoproducto,subirproducto, eliminarproducto,eliminarproductouser, subirproductoTodo} = require("./helpers/eventoSockets");
 const { comprobacionJWT } = require("./helpers/jwt");
 const cloudinary = require('./utils/cloudinary');
 const {nanoid} = require('nanoid');
@@ -120,6 +120,17 @@ class Sockets {
                       this.io.to(uid).emit('subirfotoadicionalproducto',urlconver);
                   }catch (e){
                       console.log(e);
+                  }
+             })
+
+             //subir foto para galeria
+             socket.on('fotosGaleria', async ({ url,image})=>{
+                  try{
+                      const imagen = await adicionarFotoGaleria(url,image);
+                      socket.emit('fotosGaleria',{ok:true,imagen})
+                  }catch (e){
+                      console.log(e);
+                      socket.emit('fotosGaleria',{ok:false})
                   }
              })
              
