@@ -16,6 +16,7 @@ const puroductoSchema = new Schema({
             Age:'',
             Categoria:'',
             Precio: 0,
+            PrecioOferta:0
         }
     },
     fotosdescripsion:  {

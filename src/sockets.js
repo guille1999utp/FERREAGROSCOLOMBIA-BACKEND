@@ -3,6 +3,7 @@ const { comprobacionJWT } = require("./helpers/jwt");
 const cloudinary = require('./utils/cloudinary');
 const {nanoid} = require('nanoid');
 const Videos = require('./models/videos');
+const Imagenes = require('./models/imagenes');
 
 class Sockets {
 
@@ -124,10 +125,10 @@ class Sockets {
              })
 
              //subir foto para galeria
-             socket.on('fotosGaleria', async ({ url,image})=>{
+             socket.on('fotosGaleria', async ({ url,imagen})=>{
                   try{
-                      const imagen = await adicionarFotoGaleria(url,image);
-                      socket.emit('fotosGaleria',{ok:true,imagen})
+                      const image = await adicionarFotoGaleria(url,imagen);
+                      socket.emit('fotosGaleria',{ok:true,image})
                   }catch (e){
                       console.log(e);
                       socket.emit('fotosGaleria',{ok:false})
@@ -144,6 +145,21 @@ class Sockets {
                     console.log(e);
                 }
            })
+
+           //eliminar ImagenesGaleria
+           socket.on('eliminarImagen', async ({iid,idfoto})=>{
+            try{
+                await Imagenes.findByIdAndDelete(iid);
+                await cloudinary.cloudinary.uploader.destroy(idfoto, {type : 'upload', resource_type : 'image'}, (res)=>{
+                    return res;
+               });
+                socket.emit('eliminarImagen',{ok:true,iid})
+            }catch (e){
+                console.log(e);
+                socket.emit('eliminarImagen',{ok:false})
+            }
+       })
+
              //subir Parrafo adicional de producto
              socket.on('subirparrafonuevo', async ({Parrafo,pid})=>{
                   try{
