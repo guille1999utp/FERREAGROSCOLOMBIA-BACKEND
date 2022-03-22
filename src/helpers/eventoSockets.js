@@ -21,11 +21,8 @@ const subirproductoTodo = async(url,uid,producto) =>{
         detalles: {
             Age: producto.Age,
             Categoria: producto.Categoria,
-            Ubicaion: producto.Ubicaion,
-            DomicilioIncluido: producto.Domicilio,
-            Garantia: producto.Garantia,
             Precio: producto.Precio,
-            Cantidad: producto.Cantidad
+            PrecioD: producto.PrecioD
         },
         fotosdescripsion: [url],
         textdescripsion: producto.descripsion
