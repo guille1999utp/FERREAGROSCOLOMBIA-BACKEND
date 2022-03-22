@@ -1,7 +1,7 @@
 const Producto = require('../models/producto');
 const Categoria = require('../models/categoria');
 const Videos = require('../models/videos');
-const Imagenes = require('../models/imagenes');
+const Imagenes = require('../models/Imagenes');
 
 const categorias = async (req,res) => {  
 try {
