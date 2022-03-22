@@ -1,5 +1,5 @@
 const Producto = require('../models/producto');
-const Imagenes = require('../models/imagenes');
+const Imagenes = require('../models/Imagenes');
 
 const Categoria = require('../models/categoria');
 const Usuarios = require('../models/usuario');

@@ -3,7 +3,7 @@ const { comprobacionJWT } = require("./helpers/jwt");
 const cloudinary = require('./utils/cloudinary');
 const {nanoid} = require('nanoid');
 const Videos = require('./models/videos');
-const Imagenes = require('./models/imagenes');
+const Imagenes = require('./models/Imagenes');
 
 class Sockets {
 
