@@ -66,7 +66,7 @@ try {
         const producto = req.params.busqueda;
       const {nuevo = false ,usado = false ,modelo = '',ubicacion = '',Garantia = 0,min = 0,max = 0,categoria = '',enviogratis = 0,mayor = 'false',menor = 'false'} = req.query;
         try {
-            let filtervar = await Producto.find({$or: [{ titulo: { $regex: producto } },{ textdescripsion: { $regex: producto} }] });
+            let filtervar = await Producto.find({$or: [{ titulo: { $regex: producto,$options:'i' } },{ textdescripsion: { $regex: producto , $options:'i'} }] });
             const n1 = parseInt(min);
             const n2 = parseInt(max);
             if(nuevo === 'true'){
