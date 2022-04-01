@@ -17,6 +17,8 @@ const crearproducto = async (req,res) => {
     }
 
     const crearCategoria = async (req,res) => {
+        const productos = req.params.crear;
+        console.log(productos)
         try {
             const categoria = await Categoria.find();
             const categorias = categoria.reverse();
