@@ -5,7 +5,16 @@ const categoriaSchema = new Schema({
         required : true,
         trim: true,
     },
-    
+    familia: {
+        type: String,
+        required : true,
+        trim: true,
+        default:'familia'
+    },
+    hijo: {
+        type: String,
+        trim: true,
+    },
     mostrar:{
         type: String,
         required : true,

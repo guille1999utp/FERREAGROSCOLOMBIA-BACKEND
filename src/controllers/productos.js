@@ -5,7 +5,7 @@ const Imagenes = require('../models/Imagenes');
 
 const categorias = async (req,res) => {  
 try {
-  const categorias = await Categoria.find({mostrar: "true"});
+  const categorias = await Categoria.find({mostrar: "true",familia:"familia"});
   res.json({
       ok:true,
       filtervar:categorias
@@ -38,6 +38,27 @@ try {
       })
     }
       }
+
+      const categoriasPersonalizadas  = async (req,res) => {  
+        const categoriabuscar = req.params.hijos;
+
+        try {
+          let categorias = await Categoria.find({familia:categoriabuscar});
+          categorias = categorias.map(function(filter){
+            return filter.categoria
+          })
+          res.json({
+              ok:true,
+              indi:categorias
+              })
+        } catch (error) {
+          console.log(error);
+          res.json({
+              ok:false,
+              msg:'no se encontro producto'
+          })
+        }
+          }
 
 const pedirproducto = async (req,res) => {
     const producto = req.params.producto;
@@ -258,5 +279,6 @@ module.exports ={
     CategoriasTodas,
     VideosTodos,
     SubirUrl,
-    ImagenesTodos
+    ImagenesTodos,
+    categoriasPersonalizadas
 }

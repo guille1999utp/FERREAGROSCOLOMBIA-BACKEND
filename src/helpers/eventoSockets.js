@@ -43,7 +43,9 @@ const subircategoriaTodo = async(url,producto) =>{
             categoria: producto.Categoria,
             mostrar: producto.mostrar,
             urlfoto: url.secure_url,
-            uidfoto: url.public_id
+            uidfoto: url.public_id,
+            familia: producto.familia,
+            hijo: producto.hijo
     }
     try{
           const categoria = new Categoria(newcategoria);

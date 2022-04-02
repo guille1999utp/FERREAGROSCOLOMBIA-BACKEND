@@ -84,7 +84,6 @@ class Sockets {
              
               //subir categoria con foto 
               socket.on('categoriacrear', async ({url,producto})=>{
-                  console.log(producto)
                 const urlconver = {
                     secure_url: url.secure_url,
                     public_id: (url.public_id===0)?nanoid():url.public_id
