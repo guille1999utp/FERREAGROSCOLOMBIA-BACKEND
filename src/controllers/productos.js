@@ -231,6 +231,7 @@ try {
           }
           const CategoriasTodas = async (req,res) => {
             const categoriabuscar = req.params.familia;
+            const {categoria = '',subCategoria = ''} = req.query;
            try{ 
              if(categoriabuscar === 'todos'){
               const filtervar = await Producto.find().limit(30);
@@ -239,11 +240,26 @@ try {
                   filtervar
                   })
              }else{
-               const filtervar = await Producto.find({"detalles.Familia":  categoriabuscar}).limit(30);
-                   res.json({
-                       ok:true,
-                       filtervar
-                       })
+               if(subCategoria.length >0){
+                const filtervar = await Producto.find({"detalles.Familia":  categoriabuscar,"detalles.Categoria":  categoria,"detalles.subCategoria":  subCategoria}).limit(30);
+                res.json({
+                    ok:true,
+                    filtervar
+                    })
+               }else if(categoria.length >0){
+                const filtervar = await Producto.find({"detalles.Familia":  categoriabuscar,"detalles.Categoria":  categoria,"detalles.subCategoria":  ""}).limit(30);
+                res.json({
+                    ok:true,
+                    filtervar
+                    })
+               }else{
+                const filtervar = await Producto.find({"detalles.Familia":  categoriabuscar,"detalles.Categoria":  "","detalles.subCategoria":  ""}).limit(30);
+                res.json({
+                    ok:true,
+                    filtervar
+                    })
+               }
+               
              }
                     }catch (error) {
                 console.log(error);
