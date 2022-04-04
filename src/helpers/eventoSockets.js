@@ -20,6 +20,8 @@ const subirproductoTodo = async(url,uid,producto) =>{
         titulo: producto.titulo,
         detalles: {
             Age: producto.Age,
+            Familia:producto.Familia,
+            subCategoria: producto.subCategoria,
             Categoria: producto.Categoria,
             Precio: producto.Precio,
             PrecioD: producto.PrecioD

@@ -21,14 +21,25 @@ try {
 
 
   const categoriasindividual  = async (req,res) => {  
+
     try {
-      let categorias = await Categoria.find();
-      categorias = categorias.map(function(filter){
+      let familia = await Categoria.find({familia: "familia"});
+      familia = familia.map(function(filter){
         return filter.categoria
       })
-      res.json({
+      let categoria = await Categoria.find({familia: "categoria"});
+      categoria = categoria.map(function(filter){
+        return filter.categoria
+      })
+      let subCategoria = await Categoria.find({familia: "subCategoria"});
+      subCategoria = subCategoria.map(function(filter){
+        return filter.categoria
+      })
+          res.json({
           ok:true,
-          indi:categorias
+          familia,
+          categoria,
+          subCategoria
           })
     } catch (error) {
       console.log(error);
@@ -59,6 +70,45 @@ try {
           })
         }
           }
+
+          const categoriasPersonalizadashijos  = async (req,res) => {  
+            const categoriabuscar = req.params.hijos;
+            const { categoria = ''} = req.query;
+            try {
+              if(categoria.length > 0){
+                let subcategorias = await Categoria.find({familia:"subCategoria",hijo:categoria});
+                subcategorias = subcategorias.map(function(filter){
+                  return filter.categoria
+                })
+                let categorias = await Categoria.find({familia:"categoria",hijo:categoriabuscar});
+                categorias = categorias.map(function(filter){
+                  return filter.categoria
+                })
+                res.json({
+                  ok:true,
+                  subcategorias,
+                  categorias
+                  })
+              }else{
+                let categorias = await Categoria.find({familia:"categoria",hijo:categoriabuscar});
+                categorias = categorias.map(function(filter){
+                  return filter.categoria
+                })
+                res.json({
+                  ok:true,
+                  categorias
+                  })
+              }
+             
+              
+            } catch (error) {
+              console.log(error);
+              res.json({
+                  ok:false,
+                  msg:'no se encontro producto'
+              })
+            }
+              }
 
 const pedirproducto = async (req,res) => {
     const producto = req.params.producto;
@@ -180,7 +230,7 @@ try {
           }
           }
           const CategoriasTodas = async (req,res) => {
-            const categoriabuscar = req.params.categoria;
+            const categoriabuscar = req.params.familia;
            try{ 
              if(categoriabuscar === 'todos'){
               const filtervar = await Producto.find().limit(30);
@@ -189,7 +239,7 @@ try {
                   filtervar
                   })
              }else{
-               const filtervar = await Producto.find({"detalles.Categoria":  categoriabuscar}).limit(30);
+               const filtervar = await Producto.find({"detalles.Familia":  categoriabuscar}).limit(30);
                    res.json({
                        ok:true,
                        filtervar
@@ -203,6 +253,7 @@ try {
                 })
             }
             }
+
 
             const VideosTodos = async (req,res) => {
              try{ 
@@ -280,5 +331,6 @@ module.exports ={
     VideosTodos,
     SubirUrl,
     ImagenesTodos,
-    categoriasPersonalizadas
+    categoriasPersonalizadas,
+    categoriasPersonalizadashijos
 }
