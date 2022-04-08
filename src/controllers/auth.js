@@ -2,7 +2,7 @@ const { response } = require('express');
 const bcryptjs = require('bcryptjs');
 const Usuario = require('../models/usuario');
 const { generarjwt } = require('../helpers/jwt');
-
+const { transporter } = require('../helpers/nodeEmailer')
 const Crearusuario = async (req, res = response)=>{
 
     try{
@@ -80,8 +80,34 @@ const renovar = async (req, res = response)=>{
     token
 });
 }
+
+const correo = async (req, res = response)=>{
+    const {contact_user,correo_user, asunto_user,descripcion_user } = req.body;
+    try {
+        await transporter.sendMail({
+            from: `"${contact_user}" <guillermo.penaranda@utp.edu.co>`, // sender address
+            to: correo_user, // list of receivers
+            subject: `${asunto_user} -> Ferreagroscolombia.com`, // Subject line
+            text: "", // plain text body,
+            html:`<b>de: </b>${correo_user}
+            <br></br>
+            <p>${descripcion_user}</p>
+            `
+          });
+          return res.json({
+            ok: true,
+        });
+    } catch (error) {
+        console.log(error);
+        return res.json({
+            ok: false,
+        });
+    }
+}
+
 module.exports = { 
     Crearusuario,
     InicioSesion,
-    renovar
+    renovar,
+    correo
 }

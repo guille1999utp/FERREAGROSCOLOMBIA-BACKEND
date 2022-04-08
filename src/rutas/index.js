@@ -1,31 +1,12 @@
 const { Router } = require('express');
 const router = Router();
 
-const { Crearusuario, InicioSesion, renovar } = require('../controllers/auth');
+const { Crearusuario, InicioSesion, renovar, correo } = require('../controllers/auth');
 const { check } = require('express-validator');
 const { validacioncampos } = require('../middlewares/validador-de-campos');
 const { validarjwt } = require('../helpers/regenerarjwt');
 
 
-/* router.get('/users',async(req, res)=>{
-    const usuarios = await Usuario.find();
-    res.json(usuarios);
-}); */
-
-
-/* router.put('/user/:id',async(req, res)=>{
-  const user = req.params.id;
-  const { nombre , password , fechnacimiento} = req.body;
-  await Usuario.findByIdAndUpdate(user, {
-      nombre,
-      password,
-      fechnacimiento
-  })
-  res.json({
-    message : 'actualizado'
-});
-});
- */
 router.post('/login', [
     check('email','El email es obligatorio').isEmail(),
     check('password','El password es obligatorio').isEmpty().not(),
@@ -41,13 +22,13 @@ router.post('/register', [
     validacioncampos
 ],Crearusuario);
 
-
-/* router.delete('/user/:id',async (req, res)=>{
-   await Usuario.findByIdAndDelete(req.params.id);
-   res.json({
-    message : 'usuario eliminado'
-});
-}); */
+router.post('/correo', [
+    check('contact_user','El nombre es obligatorio').isEmail(),
+    check('correo_user','El correo es obligatorio').isEmpty().not(),
+    check('asunto_user','El asunto es obligatorio').isEmpty().not(),
+    check('descripcion_user','la descripsion es obligatoria').isEmpty().not(),
+    validacioncampos
+],correo);
 
 router.get('/renovacion', validarjwt , renovar );
 
