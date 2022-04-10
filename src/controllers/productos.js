@@ -215,8 +215,25 @@ try {
         const informacionmostrarcategoria = async (req,res) => {
           const categoriabuscar = req.params.categoria;
          try{ 
-          const filtervar = await Producto.find().limit(30);
-              res.json({
+           if(categoriabuscar === 'descuentos'){
+            const filter = await Producto.find({"detalles.PrecioD":{$gt:"1"}}).limit(100).sort({creacion: 'desc'});
+            const filtervar = filter.filter((data)=>{
+              return parseInt(data.detalles[0].PrecioD) >  parseInt(data.detalles[0].Precio)
+            })
+            return res.json({
+                ok:true,
+                filtervar
+                })
+           }
+           if(categoriabuscar === 'destacados'){
+            const filtervar = await Producto.find().limit(30).sort({creacion: 'desc'});
+            return res.json({
+                ok:true,
+                filtervar
+                })
+           }
+          const filtervar = await Producto.find({"detalles.Familia": categoriabuscar}).limit(30).sort({creacion: 'desc'});
+              return res.json({
                   ok:true,
                   filtervar
                   })

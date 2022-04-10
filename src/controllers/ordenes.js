@@ -47,7 +47,7 @@ const crearproducto = async (req,res) => {
 const productosUserMostrar = async (req,res) => {
     const miId = req.params.user;
     try {
-        const producto = await Producto.find( {de: miId }).limit(20);
+        const producto = await Producto.find().limit(20).sort();
         res.json({
             ok:true,
             producto:producto
