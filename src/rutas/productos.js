@@ -9,7 +9,7 @@ router.get('/mostrar',categorias);
 router.get('/categorias', categoriasindividual);
 router.get('/categorias/:hijos', categoriasPersonalizadas);
 router.get('/mostrarsubcategorias/:hijos', categoriasPersonalizadashijos);
-router.get('/categoria/:familia', CategoriasTodas);
+router.post('/categoria/:familia', CategoriasTodas);
 router.get('/videos', VideosTodos);
 router.post('/videos', SubirUrl);
 router.get('/imagenes', ImagenesTodos);

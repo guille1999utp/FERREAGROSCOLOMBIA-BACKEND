@@ -249,31 +249,44 @@ try {
           const CategoriasTodas = async (req,res) => {
             const categoriabuscar = req.params.familia;
             const {categoria = '',subCategoria = ''} = req.query;
+            const limit = req.header('limit');
            try{ 
              if(categoriabuscar === 'todos'){
-              const filtervar = await Producto.find().limit(30);
+              let filtervar = await Producto.find().limit(limit*100);
+              const length = filtervar.length;
+              filtervar = filtervar.slice(limit*100-100,limit*100);
               res.json({
                   ok:true,
-                  filtervar
+                  filtervar,
+                  length
                   })
              }else{
                if(subCategoria.length >0){
-                const filtervar = await Producto.find({"detalles.Familia":  categoriabuscar,"detalles.Categoria":  categoria,"detalles.subCategoria":  subCategoria}).limit(30);
+                let filtervar = await Producto.find({"detalles.Familia":  categoriabuscar,"detalles.Categoria":  categoria,"detalles.subCategoria":  subCategoria}).limit(30);
+                const length = filtervar.length;
+                filtervar = filtervar.slice(0,limit*100);
                 res.json({
                     ok:true,
-                    filtervar
+                    filtervar,
+                    length
                     })
                }else if(categoria.length >0){
-                const filtervar = await Producto.find({"detalles.Familia":  categoriabuscar,"detalles.Categoria":  categoria,"detalles.subCategoria":  ""}).limit(30);
+                let filtervar = await Producto.find({"detalles.Familia":  categoriabuscar,"detalles.Categoria":  categoria,"detalles.subCategoria":  ""}).limit(30);
+                const length = filtervar.length;
+                filtervar = filtervar.slice(0,limit*100);
                 res.json({
                     ok:true,
-                    filtervar
+                    filtervar,
+                    length
                     })
                }else{
-                const filtervar = await Producto.find({"detalles.Familia":  categoriabuscar,"detalles.Categoria":  "","detalles.subCategoria":  ""}).limit(30);
+                let filtervar = await Producto.find({"detalles.Familia":  categoriabuscar,"detalles.Categoria":  "","detalles.subCategoria":  ""}).limit(30);
+                const length = filtervar.length;
+                filtervar = filtervar.slice(0,limit*100);
                 res.json({
                     ok:true,
-                    filtervar
+                    filtervar,
+                    length
                     })
                }
                
