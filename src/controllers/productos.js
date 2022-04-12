@@ -262,7 +262,7 @@ try {
                   })
              }else{
                if(subCategoria.length >0){
-                let filtervar = await Producto.find({"detalles.Familia":  categoriabuscar,"detalles.Categoria":  categoria,"detalles.subCategoria":  subCategoria}).limit(30);
+                let filtervar = await Producto.find({"detalles.Familia":  categoriabuscar,"detalles.Categoria":  categoria,"detalles.subCategoria":  subCategoria});
                 const length = filtervar.length;
                 filtervar = filtervar.slice(0,limit*100);
                 res.json({
@@ -271,7 +271,7 @@ try {
                     length
                     })
                }else if(categoria.length >0){
-                let filtervar = await Producto.find({"detalles.Familia":  categoriabuscar,"detalles.Categoria":  categoria,"detalles.subCategoria":  ""}).limit(30);
+                let filtervar = await Producto.find({"detalles.Familia":  categoriabuscar,"detalles.Categoria":  categoria}).sort({"detalles.Categoria":  1,"detalles.subCategoria":  0});
                 const length = filtervar.length;
                 filtervar = filtervar.slice(0,limit*100);
                 res.json({
@@ -280,7 +280,7 @@ try {
                     length
                     })
                }else{
-                let filtervar = await Producto.find({"detalles.Familia":  categoriabuscar,"detalles.Categoria":  "","detalles.subCategoria":  ""}).limit(30);
+                let filtervar = await Producto.find({"detalles.Familia":  categoriabuscar}).sort({"detalles.Familia":1,"detalles.Categoria":  0,"detalles.subCategoria":  0});
                 const length = filtervar.length;
                 filtervar = filtervar.slice(0,limit*100);
                 res.json({
