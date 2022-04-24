@@ -112,21 +112,20 @@ try {
 
 const pedirproducto = async (req,res) => {
     const producto = req.params.producto;
-    
 try {
-    const descr = await Producto.findById( producto );
-    res.json({
+    const descr = await Producto.find( { titulo: { $regex: producto.replace(/-/g," "), $options:'i' } } );
+    res.status(200).json({
         ok:true,
-        de:descr.de,
-        pid:descr._id,
-        textdescripsion:descr.textdescripsion,
-        fotosdescripsion: descr.fotosdescripsion,
-        titulo:descr.titulo,
-        detalles: descr.detalles
+        de:descr[0].de,
+        pid:descr[0]._id,
+        textdescripsion:descr[0].textdescripsion,
+        fotosdescripsion: descr[0].fotosdescripsion,
+        titulo:descr[0].titulo,
+        detalles: descr[0].detalles
         })
 } catch (error) {
     console.log(error);
-    res.json({
+    res.status(400).json({
         ok:false,
         msg:'no se encontro producto'
     })
