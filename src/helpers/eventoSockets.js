@@ -18,23 +18,33 @@ const subirproductoTodo = async(url,uid,producto) =>{
     const newproducto = {
         de: uid,
         titulo: producto.titulo,
-        detalles: {
+        detalles: [{
             Age: producto.Age,
             Familia:producto.Familia,
             subCategoria: producto.subCategoria,
             Categoria: producto.Categoria,
             Precio: producto.Precio,
             PrecioD: producto.PrecioD
-        },
+        }],
         fotosdescripsion: [url],
         textdescripsion: producto.descripsion
     }
     try{
+          const consulta = await Producto.find({titulo: newproducto.titulo});
+          if(consulta.length > 0) throw Error("nombre de producto existe");
           const producto = new Producto(newproducto);
-          await producto.save();
-          return producto;
+          const res = await producto.save();
+          newproducto.ok = true;
+          newproducto.pid = res._id + "";
+          return newproducto;
       } catch (error) {
-       console.log(error);
+           newproducto.ok = false;
+       if(error.message === "nombre de producto existe"){
+           newproducto.msg = error.message;
+       }else{
+            newproducto.msg = "error al subir el archivo";
+       }
+       return newproducto;
       }
        
    }
