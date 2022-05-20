@@ -24,8 +24,8 @@ router.post('/register', [
 
 router.post('/correo', [
     check('contact_user','El nombre es obligatorio').isEmail(),
-    check('correo_user','El correo es obligatorio').isEmpty().not(),
-    check('asunto_user','El asunto es obligatorio').isEmpty().not(),
+    check('correo_user','El correo es obligatorio').isEmpty(),
+    check('asunto_user','El asunto es obligatorio').isEmpty(),
     check('descripcion_user','la descripsion es obligatoria').isEmpty().not(),
     validacioncampos
 ],correo);
