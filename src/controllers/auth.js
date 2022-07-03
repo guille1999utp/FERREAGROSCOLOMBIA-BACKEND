@@ -82,26 +82,27 @@ const renovar = async (req, res = response)=>{
 }
 
 const correo = async (req, res = response)=>{
-    const {contact_user,correo_user, asunto_user,descripcion_user } = req.body;
+    const {contact_user,correo_user, asunto_user,descripcion_user,telefono } = req.body;
     try {
-        await transporter.sendMail({
-            from: `"${contact_user}" <guillermo.penaranda@utp.edu.co>`, // sender address
+           await transporter.sendMail({
+            from: `"${contact_user}" <${process.env.CORREO_SECRET}>`, // sender address
             to: correo_user, // list of receivers
-            subject: `${asunto_user} -> Ferreagroscolombia.com`, // Subject line
-            text: "", // plain text body,
-            html:`<b>de: </b>${correo_user}
-            <br></br>
-            <p>${descripcion_user}</p>
-            `
+            subject: `${asunto_user} -> ferreagrocolombia`, // Subject line
+            text: "", // plain text body
+            html: ` <b>de: </b> ${correo_user}
+            <br><br>
+            <b>telefono: ${telefono} </b>
+            <p>${descripcion_user}
+            `, // html body
           });
-          return res.json({
-            ok: true,
-        });
+
+          return res.status(200).json({
+              ok:true
+          })
     } catch (error) {
-        console.log(error);
-        return res.json({
-            ok: false,
-        });
+        return res.status(200).json({
+            ok:false
+        })
     }
 }
 

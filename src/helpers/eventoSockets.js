@@ -5,6 +5,7 @@ const Categoria = require('../models/categoria');
 const Usuarios = require('../models/usuario');
 const cloudinary = require('../utils/cloudinary');
 const bcryptjs = require('bcryptjs');
+const Informacion = require('../models/informacion');
 
 
 const userconectado = async(uid) =>{
@@ -101,22 +102,58 @@ const subircategoriaTodo = async(url,producto) =>{
         }
    }
 
+   
 
    
-   const adicionarFotoGaleria = async(url,imag) =>{
+   const adicionarFotoGaleria = async(url) =>{
     try{
-         const imagen = new Imagenes({
-            urlImagen: url.secure_url,
-            idfoto: url.public_id,
-            tamano: imag
+         const informacion =  Informacion.findOneAndUpdate({
+            urlBanner: url.secure_url,
+            idBanner: url.public_id,
         });
-        await imagen.save();
-        return imagen;
+        return informacion;
      } catch (error) {
          console.log(error);
      }
 }
 
+   
+const adicionarFotoGaleriaInformacion = async(url,foto) =>{
+    let informacion;
+    try{
+        if(foto === "urlfotosomos"){
+             informacion =  Informacion.findOneAndUpdate({
+                urlfotosomos: url.secure_url,
+                idfotosomos: url.public_id,
+           });
+        }
+        if(foto === "urlVision"){
+             informacion =  Informacion.findOneAndUpdate({
+                urlVision: url.secure_url,
+                idVision: url.public_id,
+           });
+        }
+        if(foto === "urlFundacion"){
+             informacion =  Informacion.findOneAndUpdate({
+                urlFundacion: url.secure_url,
+                idFundacion: url.public_id,
+           });
+        }
+
+        return informacion;
+     } catch (error) {
+         console.log(error);
+     }
+}
+
+const adicionarInformacionText = async(modificar) =>{
+    try{
+         const informacion =  Informacion.findOneAndUpdate(modificar);
+        return informacion;
+     } catch (error) {
+         console.log(error);
+     }
+}
 
    const adicionarParrafoproducto = async(Parrafo,pid) =>{
     try{
@@ -266,5 +303,7 @@ module.exports = {
     modificardatoscategoria,
     eliminarcategoria,
     userconectado,
-    adicionarFotoGaleria
+    adicionarFotoGaleria,
+    adicionarFotoGaleriaInformacion,
+    adicionarInformacionText
 }

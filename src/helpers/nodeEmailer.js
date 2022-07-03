@@ -1,23 +1,23 @@
-const nodemaile = require('nodemailer');
+const nodemailer = require("nodemailer");
 
- const transporter = nodemaile.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true, 
-    auth: {
-      user: process.env.CORREO_SECRET, 
-      pass: process.env.GOOGLE_SECRET,
-    },
-    tls: {
-        rejectUnauthorized: false
-    }
-  });
+let transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true, // true for 465, false for other ports
+  auth: {
+    user: process.env.CORREO_SECRET, // generated ethereal user
+    pass: process.env.GOOGLE_SECRET, // generated ethereal password
+  },
+  tls:{
+    rejectUnauthorized:false
+  }
+});
 
-  transporter.verify().then(()=>{ 
-  console.log('email enviado con exito');
- }).catch((err)=>{
-    console.log(err)
- });
- module.exports ={
-     transporter
- }
+transporter.verify().then(()=>{
+  console.log("conectado nodemailer")
+}).catch((err)=>{
+  console.log(err);
+})
+module.exports = {
+  transporter
+}

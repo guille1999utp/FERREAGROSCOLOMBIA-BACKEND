@@ -1,4 +1,4 @@
-const {subircategoriaTodo,modificardatoscategoria,eliminarcategoria, userconectado,modificardatosproducto,eliminarfotoproductoadicional,adicionarFotoGaleria,crearusuario,eliminarUser,modificarDatosUsuario,userdesconectado,adicionarproductocomprado,eliminarparrafoproducto, adicionarParrafoproducto,adicionarfotoproducto,subirproducto, eliminarproducto,eliminarproductouser, subirproductoTodo} = require("./helpers/eventoSockets");
+const {adicionarFotoGaleriaInformacion,adicionarInformacionText,subircategoriaTodo,modificardatoscategoria,eliminarcategoria, userconectado,modificardatosproducto,eliminarfotoproductoadicional,adicionarFotoGaleria,crearusuario,eliminarUser,modificarDatosUsuario,userdesconectado,adicionarproductocomprado,eliminarparrafoproducto, adicionarParrafoproducto,adicionarfotoproducto,subirproducto, eliminarproducto,eliminarproductouser, subirproductoTodo} = require("./helpers/eventoSockets");
 const { comprobacionJWT } = require("./helpers/jwt");
 const cloudinary = require('./utils/cloudinary');
 const {nanoid} = require('nanoid');
@@ -122,6 +122,53 @@ class Sockets {
                       console.log(e);
                   }
              })
+
+             //subir foto banner
+             socket.on('fotoBanner', async ({url,idFoto})=>{
+                 const urlconver = {
+                     secure_url: url.secure_url,
+                     public_id: url.public_id
+                    }
+                    try{
+                      await cloudinary.cloudinary.uploader.destroy(idFoto, {type : 'upload', resource_type : 'image'}, (res)=>{
+                          return res;
+                     });
+                      adicionarFotoGaleria(urlconver);
+                      this.io.to(uid).emit('fotoBanner',urlconver);
+                  }catch (e){
+                      console.log(e);
+                  }
+             })
+
+             //subir foto Informacion
+             socket.on('fotoInformacion', async ({url,idFoto,foto})=>{
+                console.log(url,idFoto,foto)
+                 const urlconver = {
+                     secure_url: url.secure_url,
+                     public_id: url.public_id
+                    }
+                    try{
+                        await cloudinary.cloudinary.uploader.destroy(idFoto, {type : 'upload', resource_type : 'image'}, (res)=>{
+                            return res;
+                       });
+                    adicionarFotoGaleriaInformacion(urlconver,foto);
+                      this.io.to(uid).emit('fotoInformacion',urlconver,foto);
+                  }catch (e){
+                      console.log(e);
+                  }
+             })
+
+ //modificacion informacion
+ socket.on('informacionText',  ({modificar})=>{
+
+        try{
+          adicionarInformacionText(modificar);
+          this.io.to(uid).emit('informacionText',modificar);
+      }catch (e){
+          console.log(e);
+      }
+ });
+
 
              //subir foto para galeria
              socket.on('fotosGaleria', async ({ url,imagen})=>{

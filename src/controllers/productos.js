@@ -2,13 +2,16 @@ const Producto = require('../models/producto');
 const Categoria = require('../models/categoria');
 const Videos = require('../models/videos');
 const Imagenes = require('../models/Imagenes');
-
+const Informacion = require('../models/informacion');
 const categorias = async (req,res) => {  
 try {
+
   const categorias = await Categoria.find({mostrar: "true",familia:"familia"});
+  const fotos = await Informacion.find();
   res.json({
       ok:true,
-      filtervar:categorias
+      filtervar:categorias,
+      fotos
       })
 } catch (error) {
   console.log(error);
