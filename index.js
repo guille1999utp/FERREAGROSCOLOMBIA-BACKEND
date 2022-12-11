@@ -2,10 +2,10 @@ const express = require('express');
 const http = require('http');
 const cors = require('cors');
 const path = require('path');
-const Sockets  = require('./sockets');
+const Sockets  = require('./src/sockets');
 const socketio = require('socket.io')
 require('dotenv').config();
-require('./database');
+require('./src/database');
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server , { });
@@ -16,10 +16,10 @@ app.use(cors());
 app.use(express.json());
 
 //rutas
-app.use(require('./rutas/index'))
-app.use(require('./rutas/ordenar'))
-app.use(require('./rutas/perfil'))
-app.use(require('./rutas/productos'))
+app.use(require('./src/rutas/index'))
+app.use(require('./src/rutas/ordenar'))
+app.use(require('./src/rutas/perfil'))
+app.use(require('./src/rutas/productos'))
 
 
 server.listen(app.get('port'),()=>{
