@@ -100,6 +100,7 @@ const correo = async (req, res = response)=>{
               ok:true
           })
     } catch (error) {
+        console.log(error);
         return res.status(200).json({
             ok:false
         })
