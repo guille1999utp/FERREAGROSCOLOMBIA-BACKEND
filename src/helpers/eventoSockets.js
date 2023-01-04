@@ -107,11 +107,13 @@ const subircategoriaTodo = async(url,producto) =>{
    
    const adicionarFotoGaleria = async(url) =>{
     try{
-         const informacion =  Informacion.findOneAndUpdate({
-            urlBanner: url.secure_url,
-            idBanner: url.public_id,
+         const image = new Imagenes({
+            urlImagen: url.secure_url,
+            idfoto: url.public_id,
+            tamano:"largo"
         });
-        return informacion;
+        image.save();
+        return image;
      } catch (error) {
          console.log(error);
      }

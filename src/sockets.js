@@ -158,16 +158,16 @@ class Sockets {
                   }
              })
 
- //modificacion informacion
- socket.on('informacionText',  ({modificar})=>{
-
-        try{
-          adicionarInformacionText(modificar);
-          this.io.to(uid).emit('informacionText',modificar);
-      }catch (e){
-          console.log(e);
-      }
- });
+             //modificacion informacion
+             socket.on('informacionText',  ({modificar})=>{
+            
+                    try{
+                      adicionarInformacionText(modificar);
+                      this.io.to(uid).emit('informacionText',modificar);
+                  }catch (e){
+                      console.log(e);
+                  }
+             });
 
 
              //subir foto para galeria
