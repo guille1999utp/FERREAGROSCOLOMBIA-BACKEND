@@ -219,8 +219,18 @@ class Sockets {
              //eliminar Parrafo de producto
              socket.on('productoparrafoeliminar', async ({pid,index})=>{
                 try{
-                    await eliminarparrafoproducto(pid,index);
-                    this.io.to(uid).emit('productoparrafoeliminar',index);
+                    const res = await eliminarparrafoproducto(pid,index);
+                    if(res) {
+                        this.io.to(uid).emit('productoparrafoeliminar',{
+                            error: false,
+                            index
+                        });
+                    }else{
+                        this.io.to(uid).emit('productoparrafoeliminar',{
+                            error: true,
+                        });
+                    }
+                    
                 }catch (e){
                     console.log(e);
                 }

@@ -160,7 +160,7 @@ const adicionarInformacionText = async(modificar) =>{
    const adicionarParrafoproducto = async(Parrafo,pid) =>{
     try{
         await Producto.findByIdAndUpdate(pid,{
-         $addToSet: { textdescripsion : Parrafo }  
+         $push: { textdescripsion : Parrafo }  
         });
      } catch (error) {
          console.log(error);
@@ -168,13 +168,25 @@ const adicionarInformacionText = async(modificar) =>{
 }
 
 const eliminarparrafoproducto = async(pid,index) =>{
-    const eliminar = index-1;
-    try{
-          await Producto.findByIdAndUpdate(pid,{
-            $pop: { textdescripsion : eliminar }  
-           });
-     } catch (error) {
-         console.log(error);
+        try{
+            const producto = await Producto.findById(pid);
+            if (!producto) {
+              return false;
+            }
+            const textdescripsion = producto.textdescripsion;
+            if (!textdescripsion || textdescripsion.length === 0) {
+              return false;
+            }
+
+            const updatedTextdescripsion = textdescripsion.filter((elem, i) => i !== index);
+
+            await Producto.findByIdAndUpdate(pid, {
+              $set: { textdescripsion: updatedTextdescripsion }
+            });
+          return true;
+        } catch (error) {
+            console.log(error);
+            return false;
      }
 }
 
