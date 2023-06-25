@@ -5,7 +5,7 @@ const Categoria = require('../models/categoria');
 
 const crearproducto = async (req,res) => {
     try {
-        const producto = await Producto.find();
+        const producto = await Producto.find({ _id: { $ne: "63b50531f2b31c66ebd81b11" } });
         const productos = producto.reverse();
         res.json({
             ok:true,
@@ -15,6 +15,17 @@ const crearproducto = async (req,res) => {
         console.log(error)
     }
     }
+    const productoPrincipal = async (req,res) => {
+        try {
+            const producto = await Producto.findById("63b50531f2b31c66ebd81b11");
+            res.json({
+                ok:true,
+                data:producto
+            })
+        } catch (error) {
+            console.log(error)
+        }
+        }
 
     const crearCategoria = async (req,res) => {
         const categoris = req.params.crear;
@@ -64,5 +75,6 @@ module.exports ={
     crearproducto,
     productosUserMostrar,
     crearusuario,
-    crearCategoria
+    crearCategoria,
+    productoPrincipal
 }

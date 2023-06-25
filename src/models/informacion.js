@@ -50,7 +50,13 @@ const Informacion = new Schema({
         type: String,
         trim: true,
         default:''
-    }}
+    },
+    productPrincipal: {
+        type: String,
+        trim: true,
+        default:''
+    }
+}
 );
 
 Informacion.method('toJSON', function(){
