@@ -338,9 +338,16 @@ try {
                  }
 
               const SubirUrl = async (req,res) => {
-                console.log(req)
+                console.log(req.body);
                 try{ 
-                   const videos = new Videos({urlvideo:req.body.url});
+                   if(!req.body.url || !req.body.descripcion || !req.body.titulo){
+                    return res.status(400).json({
+                      ok:false,
+                      msg:'Por favor llenar todos los campos'
+                    })
+
+                   }
+                   const videos = new Videos({urlvideo:req.body.url,descripcion:req.body.descripcion,titulo:req.body.titulo});
                    await videos.save();
                    res.json({
                        ok:true,

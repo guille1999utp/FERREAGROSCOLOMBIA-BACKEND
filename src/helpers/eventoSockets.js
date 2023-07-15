@@ -238,10 +238,9 @@ const eliminarparrafoproducto = async(pid,index) =>{
         console.log(producto)
 
        if(url !== null){
-        const ap = await cloudinary.cloudinary.uploader.destroy(producto.fotosdescripsion[0].public_id, {type : 'upload', resource_type : 'image'}, (res)=>{
+        await cloudinary.cloudinary.uploader.destroy(producto.fotosdescripsion[0].public_id, {type : 'upload', resource_type : 'image'}, (res)=>{
             return res;
        });
-       console.log(ap)
         producto.fotosdescripsion[0] = {
             secure_url: url.secure_url,
             public_id: url.public_id

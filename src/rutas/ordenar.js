@@ -8,4 +8,4 @@ router.get('/crearproductoprincipal', productoPrincipal);
 router.get('/crearCategoria/:crear', validarjwt, crearCategoria);
 router.get('/Usuarios', validarjwt, crearusuario);
 router.get('/productosdeluser/:user', productosUserMostrar);
-module.exports = router
+module.exports = router;

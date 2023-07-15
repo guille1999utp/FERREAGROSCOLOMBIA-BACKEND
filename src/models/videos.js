@@ -4,7 +4,19 @@ const videosSchema = new Schema({
         type: String,
         required : true,
         trim: true,
-    }}
+    },
+    descripcion:  {
+        type: String,
+        required : true,
+        trim: true,
+    },
+    titulo:  {
+        type: String,
+        required : true,
+        trim: true,
+    }
+
+}
 );
 
 videosSchema.method('toJSON', function(){
